@@ -6,67 +6,46 @@ The prototype is
 
     (org-make-project-templates prefix global-tags desc loc &args)
     
-Sample: 
+Sample input: 
 
-    (org-make-project-templates "ch" 
-                                '("emacs") 
-                                "Emacs" 
-                                '(id "f19d9f24-eff6-4ecb-aedb-7ec4d1e1f97e") 
-                                :basic t
-                                :study '(:question '(:scheduling nil :watermark "This is my capture. The End.")
-                                :project nil))
+    (org-make-project-templates "ab" 
+                                '("myCoolTag") 
+                                "Test" 
+                                '(id "abcd-efg-123") 
+                                :basic '(:note (:watermark "")) 
+                                :study '(:quick-question (:keywords (:immediate-finish t)))
+                                :project t)
                                 
 Sample output:
 
-    (("cht" 
-      "Emacs Todo" 
-      (id "f19d9f24-eff6-4ecb-aedb-7ec4d1e1f97e") 
-      "*  %^{Priority|C|A|B|C|D|E} TODO %? :emacs:
-          %^{Schedule|SCHEDULE|DEADLINE|}: %T
-
-       Captured on %T by %(system-name) by: %a" 
-       nil) 
-       ("chi" 
-       "Emacs Idea" 
-       (id "f19d9f24-eff6-4ecb-aedb-7ec4d1e1f97e") 
-       "*  IDEA %? :emacs:
-
-        Captured on %T by %(system-name) by: %a" 
-        nil) 
-        ("chn" "Emacs Note" (id "f19d9f24-eff6-4ecb-aedb-7ec4d1e1f97e") "*  NOTE %? :emacs:
-
-
-        Captured on %T by %(system-name) by: %a" 
-        nil) 
-        
-        ("chU" 
-        "Emacs Question" 
-        (id "f19d9f24-eff6-4ecb-aedb-7ec4d1e1f97e")
-        "*  QUESTION Question :emacs:
-
-        Captured on %T by %(system-name) by: %a" 
-        nil)
-         
-        ("chu"
-        "Emacs Quick Question"
-        (id "f19d9f24-eff6-4ecb-aedb-7ec4d1e1f97e")
-        "*  QUESTION Quick Question :emacs:
-
-        Captured on %T by %(system-name) by: %a" 
-        nil)
-          
-        ("chr"
-        "Emacs Review"
-        (id "f19d9f24-eff6-4ecb-aedb-7ec4d1e1f97e")
-        "*  %^{Priority|C|A|B|C|D|E} REVIEW %? :emacs:
-
-        Captured on %T by %(system-name) by: %a" 
-        nil)
-           
-        ("chl"
-        "Emacs Learn"
-        (id "f19d9f24-eff6-4ecb-aedb-7ec4d1e1f97e")
-        "*  %^{Priority|C|A|B|C|D|E} LEARN %? :emacs:
-        
-        Captured on %T by %(system-name) by: %a" 
-        nil))
+    (("abt" "Test Todo"
+      (id "abcd-efg-123")
+      "*  %^{Priority|C|A|B|C|D|E} TODO %? :myCoolTag:\n%^{Schedule|SCHEDULE|DEADLINE|}: %T\n%a: on %T by %(system-name)")
+     ("abi" "Test Idea"
+      (id "abcd-efg-123")
+      "*  IDEA %? :myCoolTag:\n\n%a: on %T by %(system-name)")
+     ("abn" "Test Note"
+      (id "abcd-efg-123")
+      "*  NOTE %? :myCoolTag:\n\n")
+     ("abU" "Test Question"
+      (id "abcd-efg-123")
+      "*  NEXT Question :myCoolTag:\n\n%a: on %T by %(system-name)")
+     ("abu" "Test Quick Question"
+      (id "abcd-efg-123")
+      "*  NEXT Quick Question :myCoolTag:\n\n%a: on %T by %(system-name)" :immediate-finish t)
+     ("abr" "Test Review"
+      (id "abcd-efg-123")
+      "*   Review :myCoolTag:\n\n%a: on %T by %(system-name)")
+     ("abl" "Test Learn"
+      (id "abcd-efg-123")
+      "*  %^{Priority|C|A|B|C|D|E} LEARN %? :myCoolTag:\n\n%a: on %T by %(system-name)")
+      ("abs" "Test Issue"
+     (id "abcd-efg-123")
+      "*  %^{Priority|C|A|B|C|D|E} ISSUE %^{Issue} :myCoolTag:\n%^{Schedule|SCHEDULE|DEADLINE|}: %T\n%a: on %T by %(system-name)")
+     ("abb" "Test Bug"
+      (id "abcd-efg-123")
+      "*  %^{Priority|C|A|B|C|D|E} BUG %^{Bug} :myCoolTag:\n%^{Schedule|SCHEDULE|DEADLINE|}: %T\n%a: on %T by %(system-name)")
+     ("abf" "Test Feature"
+      (id "abcd-efg-123")
+      "*  %^{Priority|C|A|B|C|D|E} FEATURE %^{Feature} :myCoolTag:\n%^{Schedule|SCHEDULE|DEADLINE|}: %T\n%a: on %T by %(system-name)"))
+    
