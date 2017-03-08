@@ -73,23 +73,23 @@ NULL use for plist extraction."
          HD-MORE-TAGS SCHEDULING BODY WATERMARK
          PROPERTIES MORE-TAGS)
   "Wrapper used by `org-make-project-templates' for org-project-template-builder."
-  (list
-   PREFIX
-   (concat DESC " " (if (stringp HD-PROMPT) HD-PROMPT (capitalize HD-TASK)))
-   LOC
-   (org-project-template-builder
-    (w-wrapper SEC :headers (org-template/header
-                             HD-TASK
-                             HD-PRIO
-                             HD-PROMPT
-                             HD-MORE-TAGS))
-    (append GLOBAL-TAGS (w-wrapper SEC :scheduling nil))
-    (w-wrapper SEC :scheduling SCHEDULING)
-    (w-wrapper SEC :body BODY)
-    (w-wrapper SEC :watermark WATERMARK)
-    (w-wrapper SEC :properties PROPERTIES)
-    )
-   (plist-get SEC :keywords)))
+  (append
+   (list
+    PREFIX
+    (concat DESC (when DESC " ") (if (stringp HD-PROMPT) HD-PROMPT (capitalize HD-TASK)))
+    LOC
+    (org-project-template-builder
+     (w-wrapper SEC :headers (org-template/header
+                              HD-TASK
+                              HD-PRIO
+                              HD-PROMPT
+                              HD-MORE-TAGS))
+     (append GLOBAL-TAGS (w-wrapper SEC :scheduling nil))
+     (w-wrapper SEC :scheduling SCHEDULING)
+     (w-wrapper SEC :body BODY)
+     (w-wrapper SEC :watermark WATERMARK)
+     (w-wrapper SEC :properties PROPERTIES)))
+  (plist-get SEC :keywords)))
 
 (defun org-make-project-templates (prefix global-tags desc loc &rest args)
   "A function that takes PREFIX, GLOBAL-TAGS, DESC, and LOC, ARGS, returning a list of captures."
@@ -104,10 +104,10 @@ NULL use for plist extraction."
       (t-wrapper (plist-get basic :note) global-tags (concat prefix "n") desc loc "note" nil nil nil nil nil nil nil nil)) ;; note
      (when study
        (list
-        (t-wrapper (plist-get study :question)       global-tags (concat prefix "U") desc loc "question" nil "Question"       nil nil nil nil nil nil) ;; question
-        (t-wrapper (plist-get study :quick-question) global-tags (concat prefix "u") desc loc "question" nil "Quick Question" nil nil nil nil nil nil) ;; quick question
-        (t-wrapper (plist-get study :review)         global-tags (concat prefix "r") desc loc "review"   t   nil              nil nil nil nil nil nil) ;; refresh)
-        (t-wrapper (plist-get study :learn)          global-tags (concat prefix "l") desc loc "learn"    t   nil              nil nil nil nil nil nil))) ;; learn)
+        (t-wrapper (plist-get study :question)       global-tags (concat prefix "U") desc loc "next"  nil "Question"       nil nil nil nil nil nil) ;; question
+        (t-wrapper (plist-get study :quick-question) global-tags (concat prefix "u") desc loc "next"  nil "Quick Question" nil nil nil nil nil nil) ;; quick question
+        (t-wrapper (plist-get study :review)         global-tags (concat prefix "r") desc loc  ""     nil "Review"         nil nil nil nil nil '("drill")) ;; refresh)
+        (t-wrapper (plist-get study :learn)          global-tags (concat prefix "l") desc loc "learn" t    nil             nil nil nil nil nil nil))) ;; learn)
      (when project
        (list
         (t-wrapper (plist-get project :issue)   global-tags (concat prefix "s") desc loc "issue"   t t nil t nil nil nil nil) ;; issue
