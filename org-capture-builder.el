@@ -75,7 +75,7 @@ NULL use for plist extraction."
   "Wrapper used by `org-make-project-templates' for org-project-template-builder."
   (list
    PREFIX
-   (concat DESC " " (or HD-PROMPT (capitalize HD-TASK)))
+   (concat DESC " " (if (stringp HD-PROMPT) HD-PROMPT (capitalize HD-TASK)))
    LOC
    (org-project-template-builder
     (w-wrapper SEC :headers (org-template/header
@@ -99,20 +99,20 @@ NULL use for plist extraction."
     (print basic)
     (append
      (list
-      (t-wrapper (plist-get basic :todo) global-tags (concat prefix "t") desc loc "todo" t nil nil t nil nil nil nil) ;; tasks
+      (t-wrapper (plist-get basic :todo) global-tags (concat prefix "t") desc loc "todo" t   nil nil t   nil nil nil nil) ;; tasks
       (t-wrapper (plist-get basic :idea) global-tags (concat prefix "i") desc loc "idea" nil nil nil nil nil nil nil nil) ;; idea
       (t-wrapper (plist-get basic :note) global-tags (concat prefix "n") desc loc "note" nil nil nil nil nil nil nil nil)) ;; note
      (when study
        (list
-        (t-wrapper (plist-get study :question) global-tags (concat prefix "U") desc loc "question" nil "Question" nil nil nil nil nil nil) ;; question
+        (t-wrapper (plist-get study :question)       global-tags (concat prefix "U") desc loc "question" nil "Question"       nil nil nil nil nil nil) ;; question
         (t-wrapper (plist-get study :quick-question) global-tags (concat prefix "u") desc loc "question" nil "Quick Question" nil nil nil nil nil nil) ;; quick question
-        (t-wrapper (plist-get study :review) global-tags (concat prefix "r") desc loc "review" t nil nil nil nil nil nil nil) ;; refresh)
-        (t-wrapper (plist-get study :learn) global-tags (concat prefix "l") desc loc "learn" t nil nil nil nil nil nil nil))) ;; learn)
+        (t-wrapper (plist-get study :review)         global-tags (concat prefix "r") desc loc "review"   t   nil              nil nil nil nil nil nil) ;; refresh)
+        (t-wrapper (plist-get study :learn)          global-tags (concat prefix "l") desc loc "learn"    t   nil              nil nil nil nil nil nil))) ;; learn)
      (when project
        (list
-        (t-wrapper (plist-get project :issue) global-tags (concat prefix "s") desc loc "issue" t t nil t nil nil nil nil) ;; issue
-        (t-wrapper (plist-get project :bug) global-tags (concat prefix "b") desc loc "bug" t t nil t nil nil nil nil) ;; bug
-        (t-wrapper (plist-get project :feature) global-tags (concat prefix "f") desc loc "feature" t t nil t nil nil nil nil nil)))  ;; feature
+        (t-wrapper (plist-get project :issue)   global-tags (concat prefix "s") desc loc "issue"   t t nil t nil nil nil nil) ;; issue
+        (t-wrapper (plist-get project :bug)     global-tags (concat prefix "b") desc loc "bug"     t t nil t nil nil nil nil) ;; bug
+        (t-wrapper (plist-get project :feature) global-tags (concat prefix "f") desc loc "feature" t t nil t nil nil nil nil)))  ;; feature
      (when (functionp 'org-make-additional-project-templates)
            (funcall 'org-make-additional-project-templates prefix global-tags desc loc args))
      )))
