@@ -16,6 +16,12 @@
 
 (defconst org-template/meta-data "%a: on %T by %(system-name)")
 
+(defvar org-make-additional-project-templates nil
+  "Function accepting the same arguments as `org-make-project-templates'.
+It returns, like `org-make-project-templates', a list of capture descriptions.
+It will be called within `org-make-project-templates' as a way to extend the
+function.  This function should look much like `org-make-project-templates'")
+
 (defun org-template/header (task &optional priority prompt more-tags)
   "Build a capture template header where TASK is an org todo marker.
 
@@ -90,6 +96,7 @@ NULL use for plist extraction."
   (let ((basic (plist-get args :basic))
         (study (plist-get args :study))
         (project (plist-get args :project)))
+    (print basic)
     (append
      (list
       (t-wrapper (plist-get basic :todo) global-tags (concat prefix "t") desc loc "todo" t nil nil t nil nil nil nil) ;; tasks
@@ -106,6 +113,8 @@ NULL use for plist extraction."
         (t-wrapper (plist-get project :issue) global-tags (concat prefix "s") desc loc "issue" t t nil t nil nil nil nil) ;; issue
         (t-wrapper (plist-get project :bug) global-tags (concat prefix "b") desc loc "bug" t t nil t nil nil nil nil) ;; bug
         (t-wrapper (plist-get project :feature) global-tags (concat prefix "f") desc loc "feature" t t nil t nil nil nil nil nil)))  ;; feature
+     (when (functionp 'org-make-additional-project-templates)
+           (funcall 'org-make-additional-project-templates prefix global-tags desc loc args))
      )))
 
 (provide 'org-capture-builder)
