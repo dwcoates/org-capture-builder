@@ -96,8 +96,8 @@ NULL use for plist extraction."
   (let ((basic (plist-get args :basic))
         (study (plist-get args :study))
         (project (plist-get args :project)))
-    (print basic)
     (append
+
      (list
       (t-wrapper (plist-get basic :todo) global-tags (concat prefix "t") desc loc "todo" t   nil nil t   nil nil nil nil) ;; tasks
       (t-wrapper (plist-get basic :idea) global-tags (concat prefix "i") desc loc "idea" nil nil nil nil nil nil nil nil) ;; idea
