@@ -88,7 +88,7 @@ NULL use for plist extraction."
      (w-wrapper SEC :headers (org-template/header
                               HD-TASK
                               HD-PRIO
-                              HD-PROMPT
+                              (if (stringp HD-PROMPT) (concat "%^{" HD-PROMPT "}") HD-PROMPT)
                               HD-MORE-TAGS))
      (append GLOBAL-TAGS BASE-TAGS (w-wrapper SEC :scheduling nil))
      (w-wrapper SEC :scheduling SCHEDULING)
@@ -121,7 +121,7 @@ NULL use for plist extraction."
 
        ;; quote
        (t-wrapper (plist-get basic :quote) global-tags (concat prefix "\"") desc loc '("quote")
-                  "" nil "%^{Quote}"  nil nil t nil nil nil)
+                  "" nil "Quote"  nil nil t nil nil nil)
 
        ;; nugget
        (t-wrapper (plist-get basic :nugget) global-tags (concat prefix ".") desc loc '("nugget")
@@ -130,11 +130,11 @@ NULL use for plist extraction."
         (list
          ;; question
          (t-wrapper (plist-get study :question)       global-tags (concat prefix "U") desc loc '("question")
-                    "next"   nil   "%^{Question}"       nil nil t nil nil nil)
+                    "next"   nil   "Question"       nil nil t nil nil nil)
 
          ;; quick question
          (t-wrapper (plist-get study :quick-question) global-tags (concat prefix "u") desc loc '("question")
-                    "next"   nil   "%^{Quick Question}" nil nil nil nil nil nil '(:immediate-finish t))
+                    "next"   nil   "Quick Question" nil nil nil nil nil nil '(:immediate-finish t))
 
          ;; refresh
          (t-wrapper (plist-get study :review)         global-tags (concat prefix "z") desc loc '("review" "drill")
