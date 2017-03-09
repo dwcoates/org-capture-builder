@@ -28,7 +28,7 @@ function.  This function should look much like `org-make-project-templates'")
 PRIORITY, PROMPT, and MORE-TAGS can be strings, nil or otherwise non-nil.
 If otherwise non-nil, they will use default settings."
   (setq task (downcase task))
-  (let ((priority (if priority " %^{Priority|C|A|B|C|D|E}" ""))
+  (let ((priority (if priority " [#%^{Priority|C|A|B|C|D|E}]" ""))
         (prompt (if prompt (concat
                             " " (if (stringp prompt)
                                     prompt
@@ -68,54 +68,103 @@ NULL use for plist extraction."
     NULL))
 
 (defun t-wrapper
-    (SEC GLOBAL-TAGS PREFIX DESC LOC
+    (SEC GLOBAL-TAGS PREFIX DESC LOC BASE-TAGS
          HD-TASK HD-PRIO HD-PROMPT
          HD-MORE-TAGS SCHEDULING BODY WATERMARK
-         PROPERTIES MORE-TAGS)
+         PROPERTIES MORE-TAGS &optional KEYWORDS)
   "Wrapper used by `org-make-project-templates' for org-project-template-builder."
   (append
    (list
+    ;; prefix
     PREFIX
+    ;; description
     (concat DESC (when DESC " ") (if (stringp HD-PROMPT) HD-PROMPT (capitalize HD-TASK)))
+    ;; type
+    'entry
+    ;; location
     LOC
+    ;; template
     (org-project-template-builder
      (w-wrapper SEC :headers (org-template/header
                               HD-TASK
                               HD-PRIO
                               HD-PROMPT
                               HD-MORE-TAGS))
-     (append GLOBAL-TAGS (w-wrapper SEC :scheduling nil))
+     (append GLOBAL-TAGS BASE-TAGS (w-wrapper SEC :scheduling nil))
      (w-wrapper SEC :scheduling SCHEDULING)
      (w-wrapper SEC :body BODY)
      (w-wrapper SEC :watermark WATERMARK)
      (w-wrapper SEC :properties PROPERTIES)))
-  (plist-get SEC :keywords)))
+  (append (plist-get SEC :keywords) KEYWORDS)))
 
 (defun org-make-project-templates (prefix global-tags desc loc &rest args)
   "A function that takes PREFIX, GLOBAL-TAGS, DESC, and LOC, ARGS, returning a list of captures."
   (let ((basic (plist-get args :basic))
         (study (plist-get args :study))
-        (project (plist-get args :project)))
-    (append
+        (project (plist-get args :project))
+        (custom-captures (plist-get args :custom-captures)))
+    (cons
+     (list prefix desc)
+     (append
+      (list
+       ;; tasks
+       (t-wrapper (plist-get basic :todo) global-tags (concat prefix "t") desc loc nil
+                  "todo" t   nil nil t   nil nil nil nil)
 
-     (list
-      (t-wrapper (plist-get basic :todo) global-tags (concat prefix "t") desc loc "todo" t   nil nil t   nil nil nil nil) ;; tasks
-      (t-wrapper (plist-get basic :idea) global-tags (concat prefix "i") desc loc "idea" nil nil nil nil nil nil nil nil) ;; idea
-      (t-wrapper (plist-get basic :note) global-tags (concat prefix "n") desc loc "note" nil nil nil nil nil nil nil nil)) ;; note
-     (when study
-       (list
-        (t-wrapper (plist-get study :question)       global-tags (concat prefix "U") desc loc "next"  nil "Question"       nil nil nil nil nil nil) ;; question
-        (t-wrapper (plist-get study :quick-question) global-tags (concat prefix "u") desc loc "next"  nil "Quick Question" nil nil nil nil nil nil) ;; quick question
-        (t-wrapper (plist-get study :review)         global-tags (concat prefix "r") desc loc  ""     nil "Review"         nil nil nil nil nil '("drill")) ;; refresh)
-        (t-wrapper (plist-get study :learn)          global-tags (concat prefix "l") desc loc "learn" t    nil             nil nil nil nil nil nil))) ;; learn)
-     (when project
-       (list
-        (t-wrapper (plist-get project :issue)   global-tags (concat prefix "s") desc loc "issue"   t t nil t nil nil nil nil) ;; issue
-        (t-wrapper (plist-get project :bug)     global-tags (concat prefix "b") desc loc "bug"     t t nil t nil nil nil nil) ;; bug
-        (t-wrapper (plist-get project :feature) global-tags (concat prefix "f") desc loc "feature" t t nil t nil nil nil nil)))  ;; feature
-     (when (functionp 'org-make-additional-project-templates)
-           (funcall 'org-make-additional-project-templates prefix global-tags desc loc args))
-     )))
+       ;; idea
+       (t-wrapper (plist-get basic :idea) global-tags (concat prefix "i") desc loc '("idea")
+                  "idea" nil t   nil nil t nil nil nil)
+
+       ;; note
+       (t-wrapper (plist-get basic :note) global-tags (concat prefix "n") desc loc '("notes")
+                  "note" nil t   nil nil t nil nil nil)
+
+       ;; quote
+       (t-wrapper (plist-get basic :quote) global-tags (concat prefix "\"") desc loc '("quote")
+                  "" nil "%^{Quote}"  nil nil t nil nil nil)
+
+       ;; nugget
+       (t-wrapper (plist-get basic :nugget) global-tags (concat prefix ".") desc loc '("nugget")
+                  "" nil  nil  nil nil nil nil nil nil '(:immediate-finish t)))
+      (when study
+        (list
+         ;; question
+         (t-wrapper (plist-get study :question)       global-tags (concat prefix "U") desc loc '("question")
+                    "next"   nil   "Question"       nil nil t nil nil nil)
+
+         ;; quick question
+         (t-wrapper (plist-get study :quick-question) global-tags (concat prefix "u") desc loc '("question")
+                    "next"   nil   t nil nil nil nil nil nil '(:immediate-finish t))
+
+         ;; refresh
+         (t-wrapper (plist-get study :review)         global-tags (concat prefix "r") desc loc '("review" "drill")
+                    ""       nil   "Quiz"         nil nil t nil nil  nil)
+
+         (t-wrapper (plist-get study :review)         global-tags (concat prefix "r") desc loc '("review")
+                    "review" t    "Review"       nil nil t nil nil  nil)
+
+         ;; learn
+         (t-wrapper (plist-get study :learn)          global-tags (concat prefix "l") desc loc '("study")
+                    "learn"  t    nil             nil nil t nil nil nil)))
+      (when project
+        (list
+         ;; issue
+         (t-wrapper (plist-get project :issue)   global-tags (concat prefix "s") desc loc '("issue")
+                    "issue"   t t nil t nil nil nil nil)
+
+         ;; bug
+         (t-wrapper (plist-get project :bug)     global-tags (concat prefix "b") desc loc '("bug")
+                    "bug"     t t nil t nil nil nil nil)
+
+         ;; feature
+         (t-wrapper (plist-get project :feature) global-tags (concat prefix "f") desc loc '("feature")
+                    "feature" t t nil t nil nil nil nil)))
+
+      custom-captures
+
+      (when (functionp 'org-make-additional-project-templates)
+        (funcall 'org-make-additional-project-templates prefix global-tags desc loc args))))
+    ))
 
 (provide 'org-capture-builder)
 
