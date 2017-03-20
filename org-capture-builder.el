@@ -16,12 +16,6 @@
 
 (defconst org-template/meta-data "%a: on %T by %(system-name)")
 
-(defvar org-make-additional-project-templates nil
-  "Function accepting the same arguments as `org-make-project-templates'.
-It returns, like `org-make-project-templates', a list of capture descriptions.
-It will be called within `org-make-project-templates' as a way to extend the
-function.  This function should look much like `org-make-project-templates'")
-
 (defun org-template/header (task &optional priority prompt more-tags)
   "Build a capture template header where TASK is an org todo marker.
 
@@ -34,8 +28,14 @@ If otherwise non-nil, they will use default settings."
                                     prompt
                                   (concat "%^{" (capitalize task) "}")))
                   " %?\n"))
-        (more-tags (if more-tags " %G" "")))
+        (more-tags (if more-tags " %^G" "")))
     (concat "* " priority " " (upcase task) prompt more-tags)))
+
+(defvar org-make-additional-project-templates nil
+  "Function accepting the same arguments as `org-make-project-templates'.
+It returns, like `org-make-project-templates', a list of capture descriptions.
+It will be called within `org-make-project-templates' as a way to extend the
+function.  This function should look much like `org-make-project-templates'")
 
 (defun org-project-template-builder (header &optional tags scheduling body watermark properties)
   "Build a capture template with HEADER, TAGS, SCHEDULING, BODY, WATERMARK.
