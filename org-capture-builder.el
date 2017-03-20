@@ -33,7 +33,7 @@ If otherwise non-nil, they will use default settings."
                             " " (if (stringp prompt)
                                     prompt
                                   (concat "%^{" (capitalize task) "}")))
-                  " %?"))
+                  " %?\n"))
         (more-tags (if more-tags " %G" "")))
     (concat "* " priority " " (upcase task) prompt more-tags)))
 
@@ -109,15 +109,15 @@ NULL use for plist extraction."
       (list
        ;; tasks
        (t-wrapper (plist-get basic :todo) global-tags (concat prefix "t") desc loc nil
-                  "todo" t   nil nil t   nil nil nil nil)
+                  "todo" t  "todo" nil t t nil nil nil)
 
        ;; idea
        (t-wrapper (plist-get basic :idea) global-tags (concat prefix "i") desc loc '("idea")
-                  "idea" nil t   nil nil t nil nil nil)
+                  "idea" nil "idea" nil nil t nil nil nil)
 
        ;; note
        (t-wrapper (plist-get basic :note) global-tags (concat prefix "n") desc loc '("notes")
-                  "note" nil t   nil nil t nil nil nil)
+                  "note" nil t   "note" nil t nil nil nil)
 
        ;; quote
        (t-wrapper (plist-get basic :quote) global-tags (concat prefix "\"") desc loc '("quote")
@@ -125,12 +125,12 @@ NULL use for plist extraction."
 
        ;; nugget
        (t-wrapper (plist-get basic :nugget) global-tags (concat prefix ".") desc loc '("nugget")
-                  "" nil  nil  nil nil nil nil nil nil '(:immediate-finish t)))
+                  "" nil  "nugget" nil nil nil nil nil nil '(:immediate-finish t)))
       (when study
         (list
          ;; question
          (t-wrapper (plist-get study :question)       global-tags (concat prefix "U") desc loc '("question")
-                    "next"   nil   "Question"       nil nil t nil nil nil)
+                    "next"   nil "Question"       nil nil t nil nil nil)
 
          ;; quick question
          (t-wrapper (plist-get study :quick-question) global-tags (concat prefix "u") desc loc '("question")
@@ -146,20 +146,20 @@ NULL use for plist extraction."
 
          ;; learn
          (t-wrapper (plist-get study :learn)          global-tags (concat prefix "l") desc loc '("study")
-                    "learn"  t    nil             nil nil t nil nil nil)))
+                    "learn"  t   "learn" nil nil t nil nil nil)))
       (when project
         (list
          ;; issue
          (t-wrapper (plist-get project :issue)   global-tags (concat prefix "s") desc loc '("issue")
-                    "issue"   t t nil t nil nil nil nil)
+                    "issue"   t "issue" nil t nil nil nil nil)
 
          ;; bug
          (t-wrapper (plist-get project :bug)     global-tags (concat prefix "b") desc loc '("bug")
-                    "bug"     t t nil t nil nil nil nil)
+                    "bug"     t "bug" nil t nil nil nil nil)
 
          ;; feature
          (t-wrapper (plist-get project :feature) global-tags (concat prefix "f") desc loc '("feature")
-                    "feature" t t nil t nil nil nil nil)))
+                    "feature" t "feature" nil t nil nil nil nil)))
 
       custom-captures
 
