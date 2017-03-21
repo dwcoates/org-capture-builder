@@ -29,7 +29,7 @@ If otherwise non-nil, they will use default settings."
                                   (concat "%^{" (capitalize task) "}")))
                   " %?\n"))
         (more-tags (if more-tags " %^G" "")))
-    (concat "* " priority " " (upcase task) prompt more-tags)))
+    (concat "* " (upcase task) priority prompt more-tags)))
 
 (defvar org-make-additional-project-templates nil
   "Function accepting the same arguments as `org-make-project-templates'.
