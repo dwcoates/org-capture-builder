@@ -55,7 +55,7 @@ PROPERTIES and MORE-TAGS are additional optional capture components."
      (concat ":PROPERTIES:\n"
              (mapconcat (lambda (p) (concat ":" (car p) ": " (cadr p))) properties "\n")
              "\n:END:\n"))
-   (when scheduling (if (stringp scheduling) (concat scheduling "\n") "%^{Schedule|SCHEDULE|DEADLINE|}: %T"))
+   (when scheduling (if (stringp scheduling) scheduling "%^{Schedule|SCHEDULED|DEADLINE|}: %^T"))
    "\n"
    (when body (concat (if (stringp body) body "\t%?") "\n"))
    (if watermark watermark org-template/meta-data)))
@@ -130,23 +130,23 @@ NULL use for plist extraction."
         (list
          ;; question
          (t-wrapper (plist-get study :question)       global-tags (concat prefix "U") desc loc '("question")
-                    "next"   nil "Question"       nil nil t nil nil nil)
+                    "next"   nil "Question"       nil "SCHEDULED: %T" t nil nil nil)
 
          ;; quick question
          (t-wrapper (plist-get study :quick-question) global-tags (concat prefix "u") desc loc '("question")
-                    "next"   nil   "Quick Question" nil nil nil nil nil nil '(:immediate-finish t))
+                    "next"   nil   "Quick Question" nil "SCHEDULED: %T" nil nil nil nil '(:immediate-finish t))
 
          ;; refresh
          (t-wrapper (plist-get study :review)         global-tags (concat prefix "z") desc loc '("review" "drill")
-                    ""       nil   "Quiz"         nil nil t nil nil  nil)
+                    ""       nil   "Quiz"         nil "SCHEDULED: %T" t nil nil  nil)
 
          ;; review
          (t-wrapper (plist-get study :review)         global-tags (concat prefix "r") desc loc '("review")
-                    "review" t    "Review"       nil nil t nil nil  nil)
+                    "review" t    "Review"       nil "SCHEDULED: %T" t nil nil  nil)
 
          ;; learn
          (t-wrapper (plist-get study :learn)          global-tags (concat prefix "l") desc loc '("study")
-                    "learn"  t   "learn" nil nil t nil nil nil)))
+                    "learn"  t   "learn" nil t t nil nil nil)))
       (when project
         (list
          ;; issue
