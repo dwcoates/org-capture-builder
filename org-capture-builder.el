@@ -129,37 +129,37 @@ NULL use for plist extraction."
       (when study
         (list
          ;; question
-         (t-wrapper (plist-get study :question)       global-tags (concat prefix "U") desc loc '("question")
-                    "next"   nil   "Question"       nil "SCHEDULED: %t" t nil nil nil)
+         (t-wrapper (plist-get study :question) global-tags (concat prefix "U") desc loc '("question")
+                    "next" nil "Question" nil "SCHEDULED: %t" t nil nil nil)
 
          ;; quick question
          (t-wrapper (plist-get study :quick-question) global-tags (concat prefix "u") desc loc '("question")
-                    "next"   nil   "Quick Question" nil "SCHEDULED: %t" nil nil nil nil '(:immediate-finish t))
+                    "next" nil "Quick Question" nil "SCHEDULED: %t" nil nil nil nil '(:immediate-finish t))
 
          ;; refresh
-         (t-wrapper (plist-get study :review)         global-tags (concat prefix "z") desc loc '("review" "drill")
-                    ""       nil   "Quiz"         nil "SCHEDULED: %t" t nil nil  nil)
+         (t-wrapper (plist-get study :review) global-tags (concat prefix "z") desc loc '("review" "drill")
+                    "" nil "Quiz" nil "SCHEDULED: %t" t nil nil  nil)
 
          ;; review
-         (t-wrapper (plist-get study :review)         global-tags (concat prefix "r") desc loc '("review")
-                    "review" t    "Review"       nil "SCHEDULED: %t" t nil nil  nil)
+         (t-wrapper (plist-get study :review) global-tags (concat prefix "r") desc loc '("review")
+                    "review" t    "Review" nil "SCHEDULED: %t" t nil nil  nil)
 
          ;; learn
-         (t-wrapper (plist-get study :learn)          global-tags (concat prefix "l") desc loc '("study")
-                    "learn"  t    "Learn"             nil "SCHEDULED: %t" t nil nil nil)))
+         (t-wrapper (plist-get study :learn) global-tags (concat prefix "l") desc loc '("study")
+                    "learn" t "Learn" nil "SCHEDULED: %t" t nil nil nil)))
       (when project
         (list
          ;; issue
          (t-wrapper (plist-get project :issue)   global-tags (concat prefix "s") desc loc '("issue")
-                    "issue"   t t nil t nil nil nil nil)
+                    "issue"   t t nil "SCHEDULED: %t" t nil nil nil)
 
          ;; bug
          (t-wrapper (plist-get project :bug)     global-tags (concat prefix "b") desc loc '("bug")
-                    "bug"     t t nil t nil nil nil nil)
+                    "bug"     t t nil "SCHEDULED: %t" t nil nil nil)
 
          ;; feature
          (t-wrapper (plist-get project :feature) global-tags (concat prefix "f") desc loc '("feature")
-                    "feature" t t nil t nil nil nil nil)))
+                    "feature" t t nil "SCHEDULED: %t" t nil nil nil)))
 
       custom-captures
 
