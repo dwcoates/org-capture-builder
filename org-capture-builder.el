@@ -54,10 +54,14 @@ PROPERTIES and MORE-TAGS are additional optional capture components."
    (when properties
      (concat ":PROPERTIES:\n"
              (mapconcat (lambda (p) (concat ":" (car p) ": " (cadr p))) properties "\n")
-             "\n:END:\n"))
-   (when scheduling (if (stringp scheduling) (concat scheduling "\n") "%^{Schedule|SCHEDULE|DEADLINE|}: %T"))
+             "\n:END:"))
    "\n"
-   (when body (concat (if (stringp body) body "\t%?") "\n"))
+   (when scheduling
+     (if (stringp scheduling)
+         (concat scheduling "\n")
+       "%^{Schedule|SCHEDULE|DEADLINE|}: %T\n"))
+   (when body (concat "\n" (if (stringp body) body "\t%?") "\n"))
+   "\n"
    (if watermark watermark org-template/meta-data)))
 
 (defun w-wrapper (SEC KEYWORD NULL)
