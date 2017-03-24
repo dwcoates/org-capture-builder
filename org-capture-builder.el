@@ -59,7 +59,7 @@ PROPERTIES and MORE-TAGS are additional optional capture components."
    (when scheduling
      (if (stringp scheduling)
          (concat scheduling "\n")
-       "%^{Schedule|SCHEDULE|DEADLINE|}: %T\n"))
+       "%^{Schedule|SCHEDULED|DEADLINE|}: %T\n"))
    (when body (concat "\n" (if (stringp body) body "\t%?") "\n"))
    "\n"
    (if watermark watermark org-template/meta-data)))
