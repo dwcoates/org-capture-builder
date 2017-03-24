@@ -35,7 +35,7 @@ If otherwise non-nil, they will use default settings."
                                   (concat "%^{" (capitalize task) "}")))
                   " %?"))
         (more-tags (if more-tags " %G" "")))
-    (concat "* " priority " " (upcase task) prompt more-tags)))
+    (concat "* " (upcase task) priority prompt more-tags)))
 
 (defun org-project-template-builder (header &optional tags scheduling body watermark properties)
   "Build a capture template with HEADER, TAGS, SCHEDULING, BODY, WATERMARK.
