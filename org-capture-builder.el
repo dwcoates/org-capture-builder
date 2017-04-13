@@ -50,9 +50,8 @@ PROPERTIES and MORE-TAGS are additional optional capture components."
           (mapconcat 'identity tags ":")
         tags)
       ":"))
-   "\n"
    (when properties
-     (concat ":PROPERTIES:\n"
+     (concat "\n:PROPERTIES:\n"
              (mapconcat (lambda (p) (concat ":" (car p) ": " (cadr p))) properties "\n")
              "\n:END:\n"))
    (when scheduling
