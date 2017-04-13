@@ -111,7 +111,7 @@ NULL use for plist extraction."
       (list
        ;; tasks
        (t-wrapper (plist-get basic :todo) global-tags (concat prefix "t") desc loc nil
-                  "todo" t  nil t t nil nil nil)
+                  "todo" t nil nil t t nil nil nil)
 
        ;; idea
        (t-wrapper (plist-get basic :idea) global-tags (concat prefix "i") desc loc '("idea")
