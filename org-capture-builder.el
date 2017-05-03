@@ -14,6 +14,8 @@
 ;;
 ;;; Code:
 
+(add-hook 'org-capture-prepare-finalize-hook 'counsel-org-tag)
+
 (defconst org-template/meta-data "%a: on %T by %(system-name)")
 
 (defvar org-make-additional-project-templates nil
@@ -37,7 +39,7 @@ If otherwise non-nil, they will use default settings."
         (more-tags (if more-tags " %G" "")))
     (concat "* " (upcase task) priority prompt more-tags)))
 
-(defun org-project-template-builder (header &optional tags scheduling body watermark properties more-tags)
+(defun org-project-template-builder (header &optional tags scheduling body watermark properties)
   "Build a capture template with HEADER, TAGS, SCHEDULING, BODY, WATERMARK.
 
 PROPERTIES and MORE-TAGS are additional optional capture components."
@@ -61,7 +63,6 @@ PROPERTIES and MORE-TAGS are additional optional capture components."
        "%^{Schedule|SCHEDULED|DEADLINE|}: %t\n"))
    (when body (concat "\n" (if (stringp body) body "\t%?") "\n"))
    "\n"
-   (when more-tags "%(counsel-org-tag)")
    (if watermark watermark org-template/meta-data)))
 
 (defun w-wrapper (SEC KEYWORD NULL)
@@ -170,6 +171,8 @@ NULL use for plist extraction."
       (when (functionp 'org-make-additional-project-templates)
         (funcall 'org-make-additional-project-templates prefix global-tags desc loc args))))
     ))
+
+
 
 (provide 'org-capture-builder)
 
