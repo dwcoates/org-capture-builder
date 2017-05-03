@@ -16,18 +16,26 @@
 
 (require 'org-capture)
 
-(add-hook 'org-capture-before-finalize-hook 'counsel-org-tag)
+(add-hook 'org-capture-prepare-finalize-hook 'counsel-org-tag)
 
 (defun org-capture-kill ()
   "Abort the current capture process."
   (interactive)
-  ;; FIXME: This does not do the right thing, we need to remove the
-  ;; new stuff by hand it is easy: undo, then kill the buffer
   (remove-hook 'org-capture-prepare-finalize-hook 'counsel-org-tag)
   (let ((org-note-abort t)
-	(org-capture-before-finalize-hook nil))
+        (org-capture-before-finalize-hook nil))
     (org-capture-finalize))
   (add-hook 'org-capture-prepare-finalize-hook 'counsel-org-tag))
+
+(defun dwc-org-capture-finalize (arg)
+  (interactive "P")
+  (cond ((equal arg '(4))
+         (remove-hook 'org-capture-prepare-finalize-hook 'counsel-org-tag)
+         (org-capture-finalize)
+         (add-hook 'org-capture-prepare-finalize-hook 'counsel-org-tag))
+        ((org-capture-finalize arg))))
+
+(define-key org-capture-mode-map (kbd "C-c C-c") 'dwc-org-capture-finalize)
 
 (defconst org-template/meta-data "%a: on %T by %(system-name)")
 
