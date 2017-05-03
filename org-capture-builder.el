@@ -37,7 +37,7 @@ If otherwise non-nil, they will use default settings."
         (more-tags (if more-tags " %G" "")))
     (concat "* " (upcase task) priority prompt more-tags)))
 
-(defun org-project-template-builder (header &optional tags scheduling body watermark properties)
+(defun org-project-template-builder (header &optional tags scheduling body watermark properties more-tags)
   "Build a capture template with HEADER, TAGS, SCHEDULING, BODY, WATERMARK.
 
 PROPERTIES and MORE-TAGS are additional optional capture components."
@@ -61,6 +61,7 @@ PROPERTIES and MORE-TAGS are additional optional capture components."
        "%^{Schedule|SCHEDULED|DEADLINE|}: %t\n"))
    (when body (concat "\n" (if (stringp body) body "\t%?") "\n"))
    "\n"
+   (when more-tags "%(counsel-org-tag)")
    (if watermark watermark org-template/meta-data)))
 
 (defun w-wrapper (SEC KEYWORD NULL)
@@ -91,13 +92,13 @@ NULL use for plist extraction."
      (w-wrapper SEC :headers (org-template/header
                               HD-TASK
                               HD-PRIO
-                              (if (stringp HD-PROMPT) (concat "%^{" HD-PROMPT "}") HD-PROMPT)
-                              HD-MORE-TAGS))
+                              (if (stringp HD-PROMPT) (concat "%^{" HD-PROMPT "}") HD-PROMPT)))
      (append GLOBAL-TAGS BASE-TAGS (w-wrapper SEC :scheduling nil))
      (w-wrapper SEC :scheduling SCHEDULING)
      (w-wrapper SEC :body BODY)
      (w-wrapper SEC :watermark WATERMARK)
-     (w-wrapper SEC :properties PROPERTIES)))
+     (w-wrapper SEC :properties PROPERTIES)
+     HD-MORE-TAGS))
   (append (plist-get SEC :keywords) KEYWORDS)))
 
 (defun org-make-project-templates (prefix global-tags desc loc &rest args)
@@ -120,7 +121,7 @@ NULL use for plist extraction."
 
        ;; note
        (t-wrapper (plist-get basic :note) global-tags (concat prefix "n") desc loc '("notes")
-                  "note" nil t   nil nil t nil nil nil)
+                  "note" nil t t nil t nil nil nil)
 
        ;; quote
        (t-wrapper (plist-get basic :quote) global-tags (concat prefix "\"") desc loc '("quote")
@@ -133,7 +134,7 @@ NULL use for plist extraction."
         (list
          ;; question
          (t-wrapper (plist-get study :question) global-tags (concat prefix "U") desc loc '("question")
-                    "next" nil "Question" nil "SCHEDULED: %t" t nil nil nil)
+                    "next" nil "Question" t "SCHEDULED: %t" t nil nil nil)
 
          ;; quick question
          (t-wrapper (plist-get study :quick-question) global-tags (concat prefix "u") desc loc '("question")
@@ -141,28 +142,28 @@ NULL use for plist extraction."
 
          ;; refresh
          (t-wrapper (plist-get study :review) global-tags (concat prefix "z") desc loc '("review" "drill")
-                    "" nil "Quiz" nil "SCHEDULED: %t" t nil nil  nil)
+                    "" nil "Quiz" t "SCHEDULED: %t" t nil nil  nil)
 
          ;; review
          (t-wrapper (plist-get study :review) global-tags (concat prefix "r") desc loc '("review")
-                    "review" t    "Review" nil "SCHEDULED: %t" t nil nil  nil)
+                    "review" t    "Review" t "SCHEDULED: %t" t nil nil  nil)
 
          ;; learn
          (t-wrapper (plist-get study :learn) global-tags (concat prefix "l") desc loc '("study")
-                    "learn" t "Learn" nil "SCHEDULED: %t" t nil nil nil)))
+                    "learn" t "Learn" t "SCHEDULED: %t" t nil nil nil)))
       (when project
         (list
          ;; issue
          (t-wrapper (plist-get project :issue)   global-tags (concat prefix "s") desc loc '("issue")
-                    "issue"   t t nil "SCHEDULED: %t" t nil nil nil)
+                    "issue"   t t t "SCHEDULED: %t" t nil nil nil)
 
          ;; bug
          (t-wrapper (plist-get project :bug)     global-tags (concat prefix "b") desc loc '("bug")
-                    "bug"     t t nil "SCHEDULED: %t" t nil nil nil)
+                    "bug"     t t t "SCHEDULED: %t" t nil nil nil)
 
          ;; feature
          (t-wrapper (plist-get project :feature) global-tags (concat prefix "f") desc loc '("feature")
-                    "feature" t t nil "SCHEDULED: %t" t nil nil nil)))
+                    "feature" t t t "SCHEDULED: %t" t nil nil nil)))
 
       custom-captures
 
