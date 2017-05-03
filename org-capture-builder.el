@@ -98,8 +98,7 @@ NULL use for plist extraction."
      (w-wrapper SEC :scheduling SCHEDULING)
      (w-wrapper SEC :body BODY)
      (w-wrapper SEC :watermark WATERMARK)
-     (w-wrapper SEC :properties PROPERTIES)
-     HD-MORE-TAGS))
+     (w-wrapper SEC :properties PROPERTIES)))
   (append (plist-get SEC :keywords) KEYWORDS)))
 
 (defun org-make-project-templates (prefix global-tags desc loc &rest args)
