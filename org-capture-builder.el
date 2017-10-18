@@ -147,7 +147,7 @@ NULL use for plist extraction."
                   "note" nil t t nil t nil nil nil)
 
        ;; quote
-       (t-wrapper (plist-get basic :quote) global-tags (concat prefix "\"") desc loc '("quote")
+       (t-wrapper (plist-get basic :quote) global-tags (concat prefix ";") desc loc '("quote")
                   "" nil "Quote"  nil nil t nil nil nil)
 
        ;; nugget
