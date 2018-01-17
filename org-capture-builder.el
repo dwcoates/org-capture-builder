@@ -24,9 +24,12 @@
   (remove-hook 'org-capture-prepare-finalize-hook 'counsel-org-tag)
   (let ((org-note-abort t)
         (org-capture-before-finalize-hook nil))
-    (if (require 'org-notes nil t)
-        (org-notes-org-capture-finalize)
-      (org-capture-finalize)))
+    ;; what does this do?
+    ;; (if (require 'org-notes nil t)
+    ;;     (org-notes-org-capture-finalize)
+      (org-capture-finalize)
+    ;;  )
+    )
   (add-hook 'org-capture-prepare-finalize-hook 'counsel-org-tag))
 
 (defun dwc-org-capture-finalize (arg)
